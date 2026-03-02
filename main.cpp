@@ -3,6 +3,8 @@
 #include <string>
 #include <ctime>
 #include <fstream> // Tambahan library wajib buat Orang 2
+#include <fstream>
+#include <sstream> // Library tambahan untuk memecah string
 
 using namespace std;
 
@@ -54,6 +56,50 @@ void saveToTxt(const vector<Log>& container, string namaFile) {
     }
 }
 
+// === TUGAS ORANG 3: FUNGSI BACA DARI FILE TXT ===
+void loadFromTxt(vector<Log>& container, string namaFile) {
+    ifstream fileMasuk(namaFile);
+    string baris;
+
+    if (fileMasuk.is_open()) {
+        container.clear(); // Bersihkan wadah sebelum diisi dari file
+        while (getline(fileMasuk, baris)) {
+            stringstream ss(baris);
+            Log temp;
+            string idStr, timestamp, level, source, message;
+
+            // Memecah baris berdasarkan tanda '|'
+            getline(ss, idStr, '|');
+            getline(ss, timestamp, '|');
+            getline(ss, level, '|');
+            getline(ss, source, '|');
+            getline(ss, message, '|');
+
+            temp.id = stoi(idStr);
+            temp.timestamp = timestamp;
+            temp.level = level;
+            temp.source = source;
+            temp.message = message;
+
+            container.push_back(temp);
+        }
+        fileMasuk.close();
+        cout << "Sukses! Membaca " << container.size() << " log dari file." << endl;
+    } else {
+        cout << "Gagal membuka file!" << endl;
+    }
+}
+
+// === TUGAS ORANG 3: FUNGSI CARI LOG ERROR ===
+void showErrorsOnly(const vector<Log>& container) {
+    cout << "\n--- MENAMPILKAN LOG ERROR SAJA ---" << endl;
+    for (const auto& log : container) {
+        if (log.level == "ERROR") {
+            cout << "ID: " << log.id << " | Modul: " << log.source << " | Pesan: " << log.message << endl;
+        }
+    }
+}
+
 int main() {
     vector<Log> gudangLog;
     
@@ -62,6 +108,12 @@ int main() {
 
     // 2. Panggil tugas Orang 2 (Simpan ke file)
     saveToTxt(gudangLog, "database_log.txt");
+
+    // 3. Panggil tugas Orang 3 (Baca ulang dari file)
+    loadFromTxt(gudangLog, "database_log.txt");
+
+    // 4. Coba cari data ERROR
+    showErrorsOnly(gudangLog);
     
     return 0;
 }
