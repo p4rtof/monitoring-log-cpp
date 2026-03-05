@@ -7,4 +7,6 @@
 7|2026-03-05 08:30:00|WARNING|AuthService|Percobaan login gagal 3 kali
 8|2026-03-05 08:35:15|INFO|ReportService|Generate laporan harian sukses
 9|2026-03-05 08:40:50|INFO|UIService|Tombol download diklik
-10|2026-03-05 08:45:30|ERROR|ReportService|Gagal menyimpan file laporan
+10|2026-03-05 08:45:30|ERROR|ReportService|Gagal menyimpan file laporan123|2002-12-12 12:00:00|ERROR|cjs|log dummy
+111|2000-01-01 00:00:00|WARNING|merdeka|jalan  raya
+14|2026-05-03|INFO|MAMA|MAMA
