@@ -1,0 +1,92 @@
+11|2026-03-05 09:00:01|INFO|AuthService|User Alice login sukses
+12|2026-03-05 09:02:15|INFO|UIService|Dashboard dimuat untuk User Alice
+13|2026-03-05 09:05:30|WARNING|DBService|Query lambat pada tabel users
+14|2026-03-05 09:08:45|INFO|PaymentService|Menunggu konfirmasi bank
+15|2026-03-05 09:12:10|ERROR|PaymentService|Timeout saat menghubungi API Bank
+16|2026-03-05 09:15:22|INFO|AuthService|User Bob mencoba login
+17|2026-03-05 09:18:33|WARNING|AuthService|User Bob salah password
+18|2026-03-05 09:22:50|INFO|ReportService|Memulai ekspor data bulanan
+19|2026-03-05 09:25:12|INFO|UIService|Halaman pengaturan dibuka
+20|2026-03-05 09:30:05|ERROR|DBService|Deadlock terdeteksi pada transaksi 502
+21|2026-03-05 09:32:11|INFO|AuthService|User Charlie login sukses
+22|2026-03-05 09:35:44|INFO|PaymentService|Pembayaran ID #8821 berhasil
+23|2026-03-05 09:38:00|WARNING|UIService|Gambar gagal dimuat (404)
+24|2026-03-05 09:41:25|INFO|ReportService|Laporan PDF selesai dibuat
+25|2026-03-05 09:44:50|ERROR|AuthService|Token JWT kedaluwarsa prematur
+26|2026-03-05 09:48:12|INFO|DBService|Backup harian dimulai
+27|2026-03-05 09:50:33|INFO|DBService|Backup harian selesai (50MB)
+28|2026-03-05 09:53:01|WARNING|PaymentService|Saldo user tidak cukup
+29|2026-03-05 09:55:18|INFO|UIService|User mengubah tema ke dark mode
+30|2026-03-05 09:58:45|ERROR|System|Memory usage mencapai 95%
+31|2026-03-05 10:01:12|INFO|AuthService|User Diana berhasil ganti password
+32|2026-03-05 10:04:22|INFO|UIService|Widget cuaca dimuat
+33|2026-03-05 10:07:05|WARNING|DBService|Indeks tabel transaksi perlu optimasi
+34|2026-03-05 10:10:33|INFO|PaymentService|Refund diproses untuk ID #7721
+35|2026-03-05 10:13:45|ERROR|ReportService|Server kehabisan memori saat render PDF
+36|2026-03-05 10:16:11|INFO|AuthService|User Fadhla update foto profil
+37|2026-03-05 10:19:28|WARNING|System|Suhu CPU mencapai 75°C
+38|2026-03-05 10:22:50|INFO|UIService|Notifikasi push dikirim ke 500 user
+39|2026-03-05 10:25:01|ERROR|DBService|Gagal melakukan commit transaksi #991
+40|2026-03-05 10:28:14|INFO|PaymentService|Metode QRIS dipilih oleh user
+41|2026-03-05 10:31:05|INFO|AuthService|Session diperpanjang otomatis
+42|2026-03-05 10:34:44|WARNING|UIService|Asset font gagal dimuat dari CDN
+43|2026-03-05 10:37:12|INFO|ReportService|Laporan mingguan mulai di-generate
+44|2026-03-05 10:40:22|INFO|DBService|Koneksi pool bertambah (8/20)
+45|2026-03-05 10:43:55|ERROR|PaymentService|Hash signature tidak valid
+46|2026-03-05 10:46:10|INFO|AuthService|User Elena login dari perangkat baru
+47|2026-03-05 10:49:33|WARNING|AuthService|Email verifikasi belum dikirim (delay)
+48|2026-03-05 10:52:18|INFO|UIService|Menu navigasi diperbarui
+49|2026-03-05 10:55:40|INFO|System|Log rotasi otomatis dijalankan
+50|2026-03-05 11:00:05|ERROR|DBService|Disk space kritis pada partisi /var/log
+51|2026-03-05 11:03:12|INFO|PaymentService|Pembayaran via GoPay diverifikasi
+52|2026-03-05 11:06:44|INFO|UIService|Halaman kontak dibuka
+53|2026-03-05 11:09:21|WARNING|ReportService|Data transaksi kosong untuk periode ini
+54|2026-03-05 11:12:35|INFO|AuthService|User Alice logout sukses
+55|2026-03-05 11:15:10|ERROR|UIService|JavaScript error pada main.js line 44
+56|2026-03-05 11:18:55|INFO|DBService|Optimasi tabel log selesai
+57|2026-03-05 11:21:22|INFO|PaymentService|Invois #1021 dikirim ke email user
+58|2026-03-05 11:24:01|WARNING|AuthService|IP 192.168.1.50 diblokir sementara
+59|2026-03-05 11:27:30|INFO|UIService|User mengubah bahasa ke English
+60|2026-03-05 11:30:15|ERROR|System|Kernel panic dicegah (OOM Killer)
+61|2026-03-05 11:33:44|INFO|ReportService|Eksport Excel selesai (2000 baris)
+62|2026-03-05 11:36:12|INFO|AuthService|Registrasi user baru: "Tono"
+63|2026-03-05 11:39:05|WARNING|DBService|Latensi database naik ke 200ms
+64|2026-03-05 11:42:50|INFO|PaymentService|Voucher "DISKON50" digunakan
+65|2026-03-05 11:45:22|ERROR|AuthService|Sertifikat SSL expired dalam 2 hari
+66|2026-03-05 11:48:11|INFO|UIService|Tutorial interaktif dimulai
+67|2026-03-05 11:51:33|INFO|DBService|Data user disinkronkan ke slave
+68|2026-03-05 11:54:05|WARNING|PaymentService|Retry transaksi #8831 (Attempt 2)
+69|2026-03-05 11:57:40|INFO|System|NTP sync berhasil
+70|2026-03-05 12:00:10|ERROR|ReportService|Format file tidak didukung (.exe)
+71|2026-03-05 12:03:55|INFO|AuthService|User Tono verifikasi email
+72|2026-03-05 12:06:12|INFO|UIService|Pop-up promo ditampilkan
+73|2026-03-05 12:09:44|WARNING|DBService|Terlalu banyak koneksi idle
+74|2026-03-05 12:12:01|INFO|PaymentService|Integrasi Midtrans aktif
+75|2026-03-05 12:15:30|ERROR|System|Gagal membaca file konfigurasi
+76|2026-03-05 12:18:22|INFO|AuthService|Reset password link dikirim
+77|2026-03-05 12:21:50|INFO|UIService|Feedback user diterima
+78|2026-03-05 12:24:11|WARNING|ReportService|Ukuran file laporan terlalu besar
+79|2026-03-05 12:27:33|INFO|DBService|Indeks baru ditambahkan pada tabel logs
+80|2026-03-05 12:30:05|ERROR|PaymentService|Bank pusat sedang maintenance
+81|2026-03-05 12:33:12|INFO|AuthService|User Bob login sukses
+82|2026-03-05 12:36:44|INFO|UIService|Scroll posisi disimpan
+83|2026-03-05 12:39:21|WARNING|System|Update OS tersedia
+84|2026-03-05 12:42:55|INFO|ReportService|Auto-clean log lama selesai
+85|2026-03-05 12:45:10|ERROR|DBService|Koneksi ditolak oleh host (Firewall)
+86|2026-03-05 12:48:33|INFO|PaymentService|Nominal saldo diperbarui
+87|2026-03-05 12:51:22|INFO|AuthService|User Bob mengganti avatar
+88|2026-03-05 12:54:01|WARNING|UIService|Input user terlalu panjang
+89|2026-03-05 12:57:40|INFO|System|Check disk rutin selesai
+90|2026-03-05 13:00:15|ERROR|AuthService|Brute force attack terdeteksi
+91|2026-03-05 13:03:44|INFO|ReportService|Sinkronisasi cloud storage sukses
+92|2026-03-05 13:06:12|INFO|DBService|Query optimasi cache hit
+93|2026-03-05 13:09:05|WARNING|PaymentService|Webook telat diterima
+94|2026-03-05 13:12:50|INFO|UIService|Dark mode otomatis aktif
+95|2026-03-05 13:15:22|ERROR|System|Gagal alokasi buffer I/O
+96|2026-03-05 13:18:11|INFO|AuthService|User login via Google OAuth
+97|2026-03-05 13:21:33|INFO|DBService|Proses vakum database berjalan
+98|2026-03-05 13:24:05|WARNING|ReportService|Koneksi printer terputus
+99|2026-03-05 13:27:40|INFO|PaymentService|Konversi mata uang diperbarui
+100|2026-03-05 13:30:10|ERROR|UIService|Gagal memuat script analytics
+1|2000-12-12 12:00:00|INFO|123|123
+5|5|5|5|5
