@@ -18,8 +18,8 @@ Proyek ini adalah sistem backend sederhana untuk mengelola log aktivitas (login,
 2. Compile: `g++ main.cpp -o main`
 3. Run: `.\main.exe`
 
-## 👥 Anggota Kelompok
-- Orang 1: Spesifikasi & Dataset
-- Orang 2: Implementasi Insert & File Handling
-- Orang 3: Implementasi Search & Logic
-- Orang 4: Main Program & Testing
+## 👥 Anggota Kelompok 9 P4 Struktur Data
+1. Fadhla (M0403241004)
+2. Avriell Shianne Chrisly (M0403241027)
+3. Mirabel Nasywa Rajendraputri (M0403241067)
+4. M. Revandi Aridya Pohan (M0403241077)
