@@ -2,7 +2,7 @@
 
 Proyek backend simpel pakai C++ buat kelola log aktivitas (login, error, API request) plus ngukur kecepatan pencariannya!
 
-## 📋 Update Progres
+## 📋 Update Progres Minggu 1-7
 - [x] Spesifikasi & skenario aktivitas.
 - [x] Pakai 2 Struktur Data: `std::vector` & `std::unordered_map` (Hash Table).
 - [x] Dataset log dummy (`data_log.txt`).
