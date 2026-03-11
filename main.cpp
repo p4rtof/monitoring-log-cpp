@@ -1,129 +1,167 @@
 #include <iostream>
 #include <vector>
-#include <fstream> // buat menulis, membaca di file .txt
+#include <fstream>
 #include <sstream>
-#include <string>
-#include <cctype>
+#include <unordered_map>
+#include <chrono>
 
 using namespace std;
 
-struct Log
-{
+struct Log {
     string id, waktu, level, sumber, pesan;
 };
 
-void bacaDataFile(vector<Log> &logs, string filename)
-{
-    ifstream file(filename);
-    if (!file.is_open())
-        return; // jika file tidak ada/tidak bisa kebuka maka keluar dari fungsi
+// Siapin 2 struktur data buat dibandingin
+vector<Log> listLog;
+unordered_map<string, vector<Log>> mapLevel; 
 
-    logs.clear(); // memastikan vector yang dibuat kosong
+void bacaDataFile(string filename) {
+    ifstream file(filename);
+    if (!file.is_open()) return;
+
     string line;
-    while (getline(file, line))
-    { // baca semua baris sampai EOF (di ujung file)
-        if (line.empty())
-            continue;              // jika ada baris kosong, maka lewatin ke baris selanjutnya
-        stringstream ss(line);     // memotong 1 baris menjadi beberapa bagian
-        Log temp;                  // simpan data sementara
-        getline(ss, temp.id, '|'); // memasukkan data ke 'id' sampai ketemu '|'
+    while (getline(file, line)) {
+        if (line.empty()) continue;
+        stringstream ss(line);
+        Log temp;
+        getline(ss, temp.id, '|');
         getline(ss, temp.waktu, '|');
         getline(ss, temp.level, '|');
         getline(ss, temp.sumber, '|');
         getline(ss, temp.pesan, '|');
-        logs.push_back(temp); // masukin data ke vektor
+        
+        // Simpan ke Vector & Hash Table
+        listLog.push_back(temp);
+        mapLevel[temp.level].push_back(temp); 
     }
-    file.close(); // file di tutup
+    file.close();
 }
 
-void addLogManual(vector<Log> &logs, string filename)
-{
-    Log newLog;
-    cout << "\n--- Tambah Log Baru ---" << endl;
-    cout << "ID: ";
-    cin >> newLog.id;
-    cin.ignore();
-    cout << "Waktu (YYYY-MM-DD HH:MM:SS): ";
-    getline(cin, newLog.waktu);
-    cout << "Level (INFO/WARNING/ERROR): ";
-    getline(cin, newLog.level);
-    cout << "Sumber: ";
-    getline(cin, newLog.sumber);
-    cout << "Pesan: ";
-    getline(cin, newLog.pesan);
+void cariPakaiHashTable(string targetLevel) {
+    // Mulai hitung waktu (Stopwatch ON)
+    auto start = chrono::high_resolution_clock::now();
 
-    logs.push_back(newLog); // Simpan ke memori
+    // Proses pencarian di Hash Table
+    auto it = mapLevel.find(targetLevel);
+    bool ketemu = (it != mapLevel.end() && !it->second.empty());
 
-    // Menambah ke baris paling bawah file (ios::app)
-    ofstream file(filename, ios::app);
-    if (file.is_open())
-    {
-        file << newLog.id << "|" << newLog.waktu << "|" << newLog.level << "|"
-             << newLog.sumber << "|" << newLog.pesan << endl;
-        file.close();
-        cout << "Berhasil! Data lama tetap aman & data baru tersimpan." << endl;
+    // Berhenti hitung waktu (Stopwatch OFF) tepat setelah nyari (sebelum nge-print)
+    auto end = chrono::high_resolution_clock::now();
+    auto durasi = chrono::duration_cast<chrono::microseconds>(end - start).count();
+
+    // Mulai nampilin data
+    cout << "\n--- Hasil Pencarian Level: " << targetLevel << " ---\n";
+    if (ketemu) {
+        // Looping untuk nampilin semua log di level tersebut
+        for (const auto& log : it->second) {
+            cout << "[" << log.waktu << "] " << log.level << " | " << log.sumber << " : " << log.pesan << "\n";
+        }
+        cout << "\nTotal data ketemu: " << it->second.size() << " log.\n";
+    } else {
+        cout << "Data nggak ketemu.\n";
     }
+    
+    // Nampilin waktu pencariannya
+    cout << "Waktu murni pencarian Hash Table: " << durasi << " mikrodetik\n";
+}
+// 1. Fungsi Tambah Log dari User
+void tambahLog() {
+    Log baru;
+    cout << "ID: "; cin >> baru.id; cin.ignore();
+    cout << "Waktu (YYYY-MM-DD): "; getline(cin, baru.waktu);
+    cout << "Level (INFO/ERROR): "; getline(cin, baru.level);
+    cout << "Sumber: "; getline(cin, baru.sumber);
+    cout << "Pesan: "; getline(cin, baru.pesan);
+    
+    // Masukin ke Vector (Memory)
+    listLog.push_back(baru);
+    mapLevel[baru.level].push_back(baru);
+    
+    // Tulis ke file txt
+    ofstream file("data_log.txt", ios::app);
+    file << baru.id << "|" << baru.waktu << "|" << baru.level << "|" << baru.sumber << "|" << baru.pesan << "\n";
+    cout << "Log mantap tersimpan!\n";
 }
 
-string toLower(string s) {
-    for (char &c : s) c = tolower(c); // tolower ini bawaan C++
-    return s;
-}
+// 2. Fungsi Cari & Tampil Log
+// Pilihan: 1 = Waktu, 2 = Level, 3 = Sumber
+// 2. Fungsi Cari & Tampil Log (Pakai Vector)
+// Pilihan: 1 = Waktu, 2 = Level, 3 = Sumber
+void cariLog(int pilihan, string keyword) {
+    vector<Log> hasilCari; // Wadah sementara buat nyimpen hasil ketemu
 
-// --- ORANG 3: Fungsi Cari (Search) ---
-void searchLog(const vector<Log>& logs, string kriteria, int tipe) {
-    bool found = false;
-    kriteria = toLower(kriteria);
+    // Mulai hitung waktu (Stopwatch ON)
+    auto start = chrono::high_resolution_clock::now();
+    
+    // Proses pencarian murni di Vector
+    for (const auto& log : listLog) {
+        bool cocok = false;
+        if (pilihan == 1 && log.waktu.find(keyword) != string::npos) cocok = true;
+        else if (pilihan == 2 && log.level == keyword) cocok = true;
+        else if (pilihan == 3 && log.sumber == keyword) cocok = true;
+
+        if (cocok) {
+            hasilCari.push_back(log); // Simpan dulu, jangan di-print di sini
+        }
+    }
+    
+    // Berhenti hitung waktu (Stopwatch OFF) tepat setelah loop selesai
+    auto end = chrono::high_resolution_clock::now();
+    auto durasi = chrono::duration_cast<chrono::microseconds>(end - start).count();
+
+    // Mulai nampilin data ke layar (Stopwatch udah aman dimatikan)
     cout << "\n--- Hasil Pencarian ---\n";
-
-    for (const auto& log : logs) {
-        bool match = false;
-
-        switch (tipe) {
-            case 1: match = (toLower(log.waktu).find(kriteria) != string::npos); break; // Cari waktu
-            case 2: match = (toLower(log.level) == kriteria); break;                    // Cari level
-            case 3: match = (toLower(log.sumber) == kriteria); break;                   // Cari sumber
+    if (!hasilCari.empty()) {
+        for (const auto& log : hasilCari) {
+            cout << "[" << log.waktu << "] " << log.level << " | " << log.sumber << " : " << log.pesan << "\n";
         }
-
-        if (match) {
-            cout << "[" << log.waktu << "] " << log.level << " | " << log.sumber << " : " << log.pesan << '\n';
-            found = true;
-        }
+        cout << "\nTotal data ketemu: " << hasilCari.size() << " log.\n";
+    } else {
+        cout << "Yah, log nggak ketemu nih.\n";
     }
 
-    if (!found) cout << "Data tidak ditemukan.\n";
+    // Nampilin waktu pencarian Vector-nya
+    cout << "Waktu murni pencarian Vector: " << durasi << " mikrodetik\n";
 }
 
-int main()
-{
-    vector<Log> listLog;
-    string fileData = "data_log.txt";
+int main() {
+    // 1. Load data lama pas program baru jalan
+    bacaDataFile("data_log.txt");
 
-    // OTOMATIS LOAD DATA LAMA
-    bacaDataFile(listLog, fileData);
+    int menu;
+    while (true) {
+        cout << "\n=== MENU LOG SYSTEM (Total: " << listLog.size() << " data) ===\n";
+        cout << "1. Tambah Log\n2. Cari Waktu\n3. Cari Level\n4. Cari Sumber\n5. Keluar\n";
+        cout << "Pilih menu: ";
+        cin >> menu;
 
-    int pil;
-    while (true)
-    {
-        cout << "\n=== MONITORING LOG SYSTEM (Ready: " << listLog.size() << " data) ===" << endl;
-        cout << "1. Cari Waktu\n2. Cari Level\n3. Cari Sumber\n4. Tambah Data Baru\n5. Keluar" << endl;
-        cout << "Pilih: ";
-        cin >> pil;
-
-        if (pil == 5)
+        if (menu == 5) {
+            cout << "Program selesai. Babay!\n";
             break;
-        if (pil == 4)
-        {
-            addLogManual(listLog, fileData);
         }
-        else
-        {
-            string key;
-            cout << "Masukkan Kata Kunci: ";
-            cin.ignore();
-            getline(cin, key);
-            searchLog(listLog, key, pil);
+
+        if (menu == 1) {
+            tambahLog();
+        } else if (menu == 3) { 
+            // KHUSUS MENU 3 (Cari Level), KITA PAKAI HASH TABLE BIAR NGEBUT
+            string cari;
+            cout << "Masukkan Level (INFO/WARNING/ERROR): ";
+            cin >> cari;
+            cariPakaiHashTable(cari); 
+
+        } else if (menu == 2 || menu == 4) { 
+            // MENU 2 (Waktu) & 4 (Sumber) TETAP PAKAI VECTOR
+            string cari;
+            cout << "Masukkan kata kunci: ";
+            cin >> cari;
+            
+            if (menu == 2) cariLog(1, cari); // 1 untuk Waktu
+            if (menu == 4) cariLog(3, cari); // 3 untuk Sumber
+            
+        } else {
+            cout << "Menu nggak ada, ketik yang bener dong!\n";
         }
     }
+    
     return 0;
 }
