@@ -1,24 +1,27 @@
 # Sistem Monitoring & Log Aktivitas Aplikasi
 
-Proyek ini adalah sistem backend sederhana untuk mengelola log aktivitas (login, error, API request) menggunakan bahasa C++.
+Proyek backend simpel pakai C++ buat kelola log aktivitas (login, error, API request) plus ngukur kecepatan pencariannya!
 
-## 📋 Progres Minggu ke-7
-- [x] Spesifikasi sistem & skenario aktivitas.
-- [x] Implementasi struktur data `std::vector`.
+## 📋 Update Progres
+- [x] Spesifikasi & skenario aktivitas.
+- [x] Pakai 2 Struktur Data: `std::vector` & `std::unordered_map` (Hash Table).
 - [x] Dataset log dummy (`data_log.txt`).
-- [x] Fungsi Insert & Search data.
+- [x] Fitur Insert & Search data.
+- [x] Hitung waktu pencarian (*stopwatch*) pakai library `<chrono>`.
 
 ## 🚀 Fitur Utama
-1. **Load Data**: Membaca log otomatis dari file `.txt`.
-2. **Search**: Mencari log berdasarkan Waktu, Level (INFO/WARN/ERROR), dan Sumber.
-3. **Add Log**: Menambah data log baru secara manual via terminal tanpa menghapus data lama.
+1. **Load Data**: Baca log otomatis dari `.txt`.
+2. **Search Cepat (Hash Table)**: Nyari log berdasarkan **Level** (INFO/WARN/ERROR) secepat kilat.
+3. **Search Biasa (Vector)**: Nyari log berdasarkan **Waktu** dan **Sumber**.
+4. **Add Log**: Nambah log baru via terminal (data lama aman, Hash Table & Vector otomatis ke-update).
+5. **Cek Performa**: Nampilin durasi waktu tiap kali nyari data (dalam mikrodetik) buat bahan laporan.
 
 ## 🛠️ Cara Menjalankan
-1. Pastikan `data_log.txt` ada di folder yang sama.
+1. Pastiin file `data_log.txt` ada di folder yang sama dengan `main.cpp`.
 2. Compile: `g++ main.cpp -o main`
 3. Run: `.\main.exe`
 
-## 👥 Anggota Kelompok 9 P4 Struktur Data
+## 👥 Anggota Kelompok 9 (P4 Struktur Data)
 1. Fadhla (M0403241004)
 2. Avriell Shianne Chrisly (M0403241027)
 3. Mirabel Nasywa Rajendraputri (M0403241067)
