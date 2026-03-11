@@ -69,7 +69,7 @@ void tambahLog() {
     Log baru;
     cout << "ID: "; cin >> baru.id; cin.ignore();
     cout << "Waktu (YYYY-MM-DD): "; getline(cin, baru.waktu);
-    cout << "Level (INFO/ERROR): "; getline(cin, baru.level);
+    cout << "Level (INFO/ERROR/WARNING): "; getline(cin, baru.level);
     cout << "Sumber: "; getline(cin, baru.sumber);
     cout << "Pesan: "; getline(cin, baru.pesan);
     
