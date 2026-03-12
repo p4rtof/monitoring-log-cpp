@@ -28,10 +28,10 @@ def tambah_data_dummy(filename, count, start_id):
                 line = f"{i}|{ts}|{lv}|{srv}|{msg}\n"
                 f.write(line)
         
-        print(f"✅ Mantap! Data 1001-2000 berhasil ditambah ke: {filename}")
+        print(f"Mantap! Data 1001-2000 berhasil ditambah ke: {filename}")
     
     except Exception as e:
-        print(f"❌ Gagal nambah data karena: {e}")
+        print(f"Gagal nambah data karena: {e}")
 
 # Pastikan path sesuai dengan folder di VS Code kamu
 # Jika file ada di dalam folder output, pakai "output/data_log.txt"
