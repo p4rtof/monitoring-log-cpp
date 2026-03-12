@@ -17,7 +17,7 @@ Proyek backend simpel pakai C++ buat kelola log aktivitas (login, error, API req
 5. **Cek Performa**: Nampilin durasi waktu tiap kali nyari data (dalam mikrodetik) buat bahan laporan.
 
 ## 🛠️ Cara Menjalankan
-1. Pastiin file `data_log.txt` ada di folder yang sama dengan `main.cpp`.
+1. Pastiin file `data_log.txt` ada di folder `output`.
 2. Compile: `g++ main.cpp -o main`
 3. Run: `.\main.exe`
 
