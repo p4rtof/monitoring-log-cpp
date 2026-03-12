@@ -28,7 +28,7 @@ def tambah_data_dummy(filename, count, start_id):
                 line = f"{i}|{ts}|{lv}|{srv}|{msg}\n"
                 f.write(line)
         
-        print(f"Mantap! Data 1001-2000 berhasil ditambah ke: {filename}")
+        print(f"Mantap! Data berhasil ditambah ke: {filename}")
     
     except Exception as e:
         print(f"Gagal nambah data karena: {e}")
@@ -36,4 +36,4 @@ def tambah_data_dummy(filename, count, start_id):
 # Pastika file data_log.txt ada di dalam folder output
 
 # tambah_data_dummy(lokasi file/nama file, berapa banyak data, mulai dari id berapa)
-tambah_data_dummy("output/data_log.txt", 1000, 2001)
+tambah_data_dummy("output/data_log.txt", 3000, 1)
