@@ -2997,7 +2997,4 @@
 2997|2026-03-15 21:44:02|WARNING|ReportService|Salah password
 2998|2026-01-22 13:56:13|ERROR|PaymentService|API Timeout
 2999|2026-02-11 23:38:41|ERROR|UIService|Memory Leak
-3000|2026-01-27 21:44:13|WARNING|UIService|Latensi naik3111|2012-12-12 02:02:02|INFO|MY SUMBER|my pesan
-12312|1202-12-12 01:01:00|INFO|my sumber|my pesan
-1123123|1212-12-12 12:12:12|INFO|my sumber|mmm
-141414|2015-12-14|WARNING|pesan baru|sumber baru
+3000|2026-01-27 21:44:13|WARNING|UIService|Latensi naik3001|2012-12-12 10:10:00|INFO|my sumber|inipesan baru

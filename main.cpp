@@ -20,18 +20,18 @@ void bacaDataFile(string filename){
         return;
 
     string line;
-    while (getline(file, line)){
+    while (getline(file, line)){ 
         if (line.empty())
             continue;
         stringstream ss(line);
-        Log temp;
+        Log temp;  
 
         getline(ss, temp.id, '|');
         getline(ss, temp.waktu, '|');
         getline(ss, temp.level, '|');
         getline(ss, temp.sumber, '|');
         getline(ss, temp.pesan, '|');
-
+ 
         listLog.push_back(temp);
         mapLevel[temp.level].push_back(temp);
     }
@@ -49,8 +49,7 @@ void cariPakaiHashTable(string targetLevel){
 
     cout << "\n--- Hasil Pencarian Level: " << targetLevel << " ---\n";
     if (ketemu){
-        for (const auto &log : it->second)
-        {
+        for (const auto &log : it->second){
             cout << "[" << log.waktu << "] " << log.level << " | " << log.sumber << " : " << log.pesan << "\n";
         }
         cout << "\nTotal data ketemu: " << it->second.size() << " log.\n";
@@ -93,11 +92,8 @@ void cariLog(int pilihan, string keyword){
         bool cocok = false;
         if (pilihan == 1 && log.waktu.find(keyword) != string::npos)
             cocok = true;
-        else if (pilihan == 2 && log.level == keyword)
+        else if (pilihan == 3 && log.sumber.find(keyword) != string::npos)
             cocok = true;
-        else if (pilihan == 3 && log.sumber == keyword)
-            cocok = true;
-
         if (cocok){
             hasilCari.push_back(log);
         }
@@ -108,8 +104,7 @@ void cariLog(int pilihan, string keyword){
 
     cout << "\n--- Hasil Pencarian ---\n";
     if (!hasilCari.empty()){
-        for (const auto &log : hasilCari)
-        {
+        for (const auto &log : hasilCari){
             cout << "[" << log.waktu << "] " << log.level << " | " << log.sumber << " : " << log.pesan << "\n";
         }
         cout << "\nTotal data ketemu: " << hasilCari.size() << " log.\n";
@@ -117,7 +112,6 @@ void cariLog(int pilihan, string keyword){
     else{
         cout << "Log Tidak Ditemukan!\n";
     }
-
     cout << "Waktu murni pencarian Vector: " << durasi << " mikrodetik\n";
 }
 
@@ -135,7 +129,6 @@ int main(){
             cout << "Program selesai!\n";
             break;
         }
-
         if (menu == 1){
             tambahLog();
         }
@@ -148,7 +141,9 @@ int main(){
         else if (menu == 2 || menu == 4){
             string cari;
             cout << "Masukkan kata kunci: ";
-            cin >> cari;
+
+            cin.ignore(); 
+            getline(cin, cari); 
 
             if (menu == 2)
                 cariLog(1, cari);
