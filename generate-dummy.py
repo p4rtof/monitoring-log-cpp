@@ -33,6 +33,7 @@ def tambah_data_dummy(filename, count, start_id):
     except Exception as e:
         print(f"Gagal nambah data karena: {e}")
 
-# Pastikan path sesuai dengan folder di VS Code kamu
-# Jika file ada di dalam folder output, pakai "output/data_log.txt"
+# Pastika file data_log.txt ada di dalam folder output
+
+# tambah_data_dummy(lokasi file/nama file, berapa banyak data, mulai dari id berapa)
 tambah_data_dummy("output/data_log.txt", 1000, 2001)
