@@ -147,7 +147,7 @@ int main(){
 
             if (menu == 2)
                 cariLog(1, cari);
-            if (menu == 4)
+            else 
                 cariLog(3, cari);
         }
         else{
