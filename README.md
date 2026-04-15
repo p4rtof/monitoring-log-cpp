@@ -21,9 +21,3 @@ Proyek *backend* simpel menggunakan C++ untuk mengelola log aktivitas sistem (se
 2. *Compile* kode C++: 
    ```bash
    g++ main.cpp -o main
-
-## 👥 Anggota Kelompok 9 (P4 Struktur Data)
-1. Fadhla (M0403241004)
-2. Avriell Shianne Chrisly (M0403241027)
-3. Mirabel Nasywa Rajendraputri (M0403241067)
-4. M. Revandi Aridya Pohan (M0403241077)
