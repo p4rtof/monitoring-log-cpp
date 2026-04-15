@@ -2,8 +2,9 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include <unordered_map>
+#include <map>
 #include <chrono>
+#include <algorithm>
 
 using namespace std;
 
@@ -12,7 +13,7 @@ struct Log{
 };
 
 vector<Log> listLog;
-unordered_map<string, vector<Log>> mapLevel;
+map<string, vector<Log>> mapLevel;
 
 void bacaDataFile(string filename){
     ifstream file(filename);
@@ -38,7 +39,8 @@ void bacaDataFile(string filename){
     file.close();
 }
 
-void cariPakaiHashTable(string targetLevel){
+// cari pake HashTable -> LEVEL
+void cariLevel(string targetLevel){
     auto start = chrono::high_resolution_clock::now();
 
     auto it = mapLevel.find(targetLevel);
@@ -83,7 +85,7 @@ void tambahLog(){
     cout << "Log berhasil tersimpan!\n";
 }
 
-void cariLog(int pilihan, string keyword){
+void cariWaktuDanSumber(int pilihan, string keyword){
     vector<Log> hasilCari;
 
     auto start = chrono::high_resolution_clock::now();
@@ -115,43 +117,119 @@ void cariLog(int pilihan, string keyword){
     cout << "Waktu murni pencarian Vector: " << durasi << " mikrodetik\n";
 }
 
+void hapusLogLama() {
+    string batasWaktu;
+    cout << "Hapus log SEBELUM tanggal (YYYY-MM-DD): ";
+    cin >> batasWaktu;
+
+    cout << "\nPilih Metode Penghapusan:\n";
+    cout << "--------------------------\n";
+    cout << "1. Langsung hapus di .txt \n";
+    cout << "2. Hapus di RAM dan simpan saat exit \n";
+    cout << "Pilih (1/2): ";
+    int opsi;
+    cin >> opsi;
+
+    auto start = chrono::high_resolution_clock::now();
+
+    // 1. Pindahin log yang masih aman
+    vector<Log> logSisa;
+    for (int i = 0; i < listLog.size(); i++) {
+        if (listLog[i].waktu >= batasWaktu) { 
+            logSisa.push_back(listLog[i]); 
+        }
+    }
+    listLog = logSisa; 
+
+    // 2. Kosongin map dan isi ulang
+    mapLevel.clear();
+    for (int i = 0; i < listLog.size(); i++) {
+        mapLevel[listLog[i].level].push_back(listLog[i]);
+    }
+
+    // 3. Eksekusi sesuai opsi
+    if (opsi == 1) {
+        // Tulis langsung ke file saat itu juga
+        stringstream buffer;
+        for (int i = 0; i < listLog.size(); i++) {
+            buffer << listLog[i].id << "|" << listLog[i].waktu << "|" << listLog[i].level << "|" 
+                   << listLog[i].sumber << "|" << listLog[i].pesan << "\n";
+        }
+        ofstream file("data_log.txt", ios::trunc); 
+        file << buffer.str(); 
+        file.close();
+    }
+
+    auto end = chrono::high_resolution_clock::now();
+    auto durasi = chrono::duration_cast<chrono::microseconds>(end - start).count();
+
+    cout << "\nSukses! Sisa total log sekarang: " << listLog.size() << "\n";
+    cout << "Waktu murni hapus & sinkronisasi: " << durasi << " mikrodetik\n";
+}
+
+void simpanKeFile() {
+    stringstream buffer;
+    for (int i = 0; i < listLog.size(); i++) {
+        buffer << listLog[i].id << "|" << listLog[i].waktu << "|" << listLog[i].level << "|" 
+               << listLog[i].sumber << "|" << listLog[i].pesan << "\n";
+    }
+    
+    ofstream file("data_log.txt", ios::trunc); // Langsung simpan ke .txt
+    file << buffer.str(); 
+    file.close();
+}
+
+
 int main(){
     bacaDataFile("data_log.txt");
 
     int menu;
     while (true){
         cout << "\n=== MENU LOG SYSTEM (Total: " << listLog.size() << " data) ===\n";
-        cout << "1. Tambah Log\n2. Cari Waktu\n3. Cari Level\n4. Cari Sumber\n5. Keluar\n";
+        cout << "1. Tambah Log\n2. Cari Waktu\n3. Cari Level\n4. Cari Sumber\n5. Hapus Log Lama\n6. Keluar\n";
         cout << "Pilih menu: ";
         cin >> menu;
 
-        if (menu == 5){
-            cout << "Program selesai!\n";
-            break;
-        }
-        if (menu == 1){
-            tambahLog();
-        }
-        else if (menu == 3){
-            string cari;
-            cout << "Masukkan Level (INFO/WARNING/ERROR): ";
-            cin >> cari;
-            cariPakaiHashTable(cari);
-        }
-        else if (menu == 2 || menu == 4){
-            string cari;
-            cout << "Masukkan kata kunci: ";
+        switch (menu) {
+            case 1:
+                tambahLog();
+                break;
+                
+            case 2:
+            case 4: { // Pakai kurung kurawal karena ada deklarasi variabel baru
+                string cari;
+                cout << "Masukkan kata kunci: ";
+                cin.ignore(); 
+                getline(cin, cari); 
 
-            cin.ignore(); 
-            getline(cin, cari); 
-
-            if (menu == 2)
-                cariLog(1, cari);
-            else 
-                cariLog(3, cari);
-        }
-        else{
-            cout << "\nMenu Tidak Tersedia\n";
+                if (menu == 2)
+                    cariWaktuDanSumber(1, cari);
+                else 
+                    cariWaktuDanSumber(3, cari);
+                break;
+            }
+            
+            case 3: { // Pakai kurung kurawal juga di sini
+                string cari;
+                cout << "Masukkan Level (INFO/WARNING/ERROR): ";
+                cin >> cari;
+                cariLevel(cari);
+                break;
+            }
+            
+            case 5:
+                hapusLogLama(); // Fungsi yang baru kita buat
+                break;
+                
+            case 6:
+                cout << "\nMenyimpan data...\n";
+                simpanKeFile();
+                cout << "Program selesai!\n";
+                return 0; // Pakai return 0 biar langsung keluar dari program, bukan break
+                
+            default:
+                cout << "\nMenu Tidak Tersedia\n";
+                break;
         }
     }
 
