@@ -36,4 +36,4 @@ def tambah_data_dummy(filename, count, start_id):
 # Pastika file data_log.txt ada di dalam folder output
 
 # tambah_data_dummy(lokasi file/nama file, berapa banyak data, mulai dari id berapa)
-tambah_data_dummy("output/data_log.txt", 20000, 1)
+tambah_data_dummy("output/data_log.txt", 10000, 1)

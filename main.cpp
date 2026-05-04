@@ -1,237 +1,216 @@
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include <sstream>
-#include <map>
 #include <chrono>
-#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <unordered_map>
+#include <vector>
 
 using namespace std;
 
-struct Log{
-    string id, waktu, level, sumber, pesan;
+struct Log {
+  string id, waktu, level, sumber, pesan;
 };
 
-vector<Log> listLog;
-map<string, vector<Log>> mapLevel;
+// 2 Struktur Data
+vector<Log> listLog;                          // O(N) buat cari waktu dan sumber
+unordered_map<string, vector<Log>> mapLevel;  // O(1) buat cari level dan error
 
-void bacaDataFile(string filename){
-    ifstream file(filename);
-    if (!file.is_open())
-        return;
+// --- 1. BACA DATA DI FILE .TXT ---
+void bacaDataFile() {
+  ifstream file("data_log.txt");
+  if (!file.is_open()) return;
 
-    string line;
-    while (getline(file, line)){ 
-        if (line.empty())
-            continue;
-        stringstream ss(line);
-        Log temp;  
+  string line;
+  while (getline(file, line)) {
+    if (line.empty()) continue;
+    stringstream ss(line);
+    Log temp;
 
-        getline(ss, temp.id, '|');
-        getline(ss, temp.waktu, '|');
-        getline(ss, temp.level, '|');
-        getline(ss, temp.sumber, '|');
-        getline(ss, temp.pesan, '|');
- 
-        listLog.push_back(temp);
-        mapLevel[temp.level].push_back(temp);
-    }
-    file.close();
+    getline(ss, temp.id, '|');
+    getline(ss, temp.waktu, '|');
+    getline(ss, temp.level, '|');
+    getline(ss, temp.sumber, '|');
+    getline(ss, temp.pesan, '|');
+
+    listLog.push_back(temp);
+    mapLevel[temp.level].push_back(temp);
+  }
+  file.close();
 }
 
-// cari pake HashTable -> LEVEL
-void cariLevel(string targetLevel){
-    auto start = chrono::high_resolution_clock::now();
+// --- 2. INSERT LOG ---
+void tambahLog() {
+  Log baru;
+  cout << "ID: ";
+  cin >> baru.id;
+  cin.ignore();
+  cout << "Waktu (YYYY-MM-DD): ";
+  getline(cin, baru.waktu);
+  cout << "Level (INFO/ERROR/WARNING): ";
+  getline(cin, baru.level);
+  cout << "Sumber: ";
+  getline(cin, baru.sumber);
+  cout << "Pesan: ";
+  getline(cin, baru.pesan);
 
-    auto it = mapLevel.find(targetLevel);
-    bool ketemu = (it != mapLevel.end() && !it->second.empty());
+  listLog.push_back(baru);
+  mapLevel[baru.level].push_back(baru);
 
-    auto end = chrono::high_resolution_clock::now();
-    auto durasi = chrono::duration_cast<chrono::microseconds>(end - start).count();
+  ofstream file("data_log.txt", ios::app);
+  file << baru.id << "|" << baru.waktu << "|" << baru.level << "|"
+       << baru.sumber << "|" << baru.pesan << "\n";
+  file.close();
 
-    cout << "\n--- Hasil Pencarian Level: " << targetLevel << " ---\n";
-    if (ketemu){
-        for (const auto &log : it->second){
-            cout << "[" << log.waktu << "] " << log.level << " | " << log.sumber << " : " << log.pesan << "\n";
-        }
-        cout << "\nTotal data ketemu: " << it->second.size() << " log.\n";
-    }
-    else{
-        cout << "Data Tidak Sesuai (Kapital)\n";
-    }
-
-    cout << "Waktu murni pencarian Hash Table: " << durasi << " mikrodetik\n";
+  cout << "Log berhasil ditambah dan tersimpan permanen!\n";
 }
 
-void tambahLog(){
-    Log baru;
-    cout << "ID: ";
-    cin >> baru.id;
-    cin.ignore();
-    cout << "Waktu (YYYY-MM-DD): ";
-    getline(cin, baru.waktu);
-    cout << "Level (INFO/ERROR/WARNING): ";
-    getline(cin, baru.level);
-    cout << "Sumber: ";
-    getline(cin, baru.sumber);
-    cout << "Pesan: ";
-    getline(cin, baru.pesan);
+// --- 3. SEARCH O(N) (VECTOR) ---
+void cariWaktuAtauSumber(int pilihan, string keyword) {
+  auto start = chrono::high_resolution_clock::now();
+  int ketemu = 0;
 
-    listLog.push_back(baru);
-    mapLevel[baru.level].push_back(baru);
+  for (const auto& log : listLog) {
+    if ((pilihan == 1 && log.waktu.find(keyword) != string::npos) ||
+        (pilihan == 2 && log.sumber.find(keyword) != string::npos)) {
+      cout << "[" << log.waktu << "] " << log.level << " | " << log.sumber
+           << " : " << log.pesan << "\n";
+      ketemu++;
+    }
+  }
 
-    ofstream file("data_log.txt", ios::app);
-    file << baru.id << "|" << baru.waktu << "|" << baru.level << "|" << baru.sumber << "|" << baru.pesan << "\n";
-    cout << "Log berhasil tersimpan!\n";
+  auto end = chrono::high_resolution_clock::now();
+  cout << "\nTotal ketemu: " << ketemu << " log.\n";
+  cout << "Waktu pencarian Vector: "
+       << chrono::duration_cast<chrono::microseconds>(end - start).count()
+       << " mikrodetik\n";
 }
 
-void cariWaktuDanSumber(int pilihan, string keyword){
-    vector<Log> hasilCari;
+// --- 4. SEARCH O(1) (HASH TABLE) ---
+void cariLevel(string target) {
+  auto start = chrono::high_resolution_clock::now();
 
-    auto start = chrono::high_resolution_clock::now();
+  auto it = mapLevel.find(target);
+  auto end = chrono::high_resolution_clock::now();
 
-    for (const auto &log : listLog){
-        bool cocok = false;
-        if (pilihan == 1 && log.waktu.find(keyword) != string::npos)
-            cocok = true;
-        else if (pilihan == 3 && log.sumber.find(keyword) != string::npos)
-            cocok = true;
-        if (cocok){
-            hasilCari.push_back(log);
-        }
+  int ketemu = 0;
+
+  if (it != mapLevel.end()) {
+    for (const auto& log : it->second) {
+      cout << "[" << log.waktu << "] " << log.level << " | " << log.sumber
+           << " : " << log.pesan << "\n";
     }
+    ketemu = it->second.size();
+  }
 
-    auto end = chrono::high_resolution_clock::now();
-    auto durasi = chrono::duration_cast<chrono::microseconds>(end - start).count();
-
-    cout << "\n--- Hasil Pencarian ---\n";
-    if (!hasilCari.empty()){
-        for (const auto &log : hasilCari){
-            cout << "[" << log.waktu << "] " << log.level << " | " << log.sumber << " : " << log.pesan << "\n";
-        }
-        cout << "\nTotal data ketemu: " << hasilCari.size() << " log.\n";
-    }
-    else{
-        cout << "Log Tidak Ditemukan!\n";
-    }
-    cout << "Waktu murni pencarian Vector: " << durasi << " mikrodetik\n";
+  cout << "\nTotal ketemu: " << ketemu << " log.\n";
+  cout << "Waktu pencarian Hash Map: "
+       << chrono::duration_cast<chrono::microseconds>(end - start).count()
+       << " mikrodetik\n";
 }
 
+// --- 5. STATISTIK ---
+void tampilStatistik() {
+  cout << "\n=== STATISTIK LOG ===\n";
+  for (const auto& pair : mapLevel) {
+    cout << "- " << pair.first << ": " << pair.second.size() << " LOG\n";
+  }
+  cout << "Total Keseluruhan: " << listLog.size() << " log\n";
+}
+
+// --- 6. HAPUS LOG ---
 void hapusLogLama() {
-    string batasWaktu;
-    cout << "Hapus log SEBELUM tanggal (YYYY-MM-DD): ";
-    cin >> batasWaktu;
+  string batas;
+  cout << "Hapus log SEBELUM tanggal (YYYY-MM-DD): ";
+  cin >> batas;
 
-    cout << "\nPilih Metode Penghapusan:\n";
-    cout << "--------------------------\n";
-    cout << "1. Langsung hapus di .txt \n";
-    cout << "2. Hapus di RAM dan simpan saat exit \n";
-    cout << "Pilih (1/2): ";
-    int opsi;
-    cin >> opsi;
+  auto start = chrono::high_resolution_clock::now();
 
-    auto start = chrono::high_resolution_clock::now();
+  vector<Log> logSisa;
+  logSisa.reserve(listLog.size());
+  mapLevel.clear();
+  stringstream buffer;
 
-    // 1. Pindahin log yang masih aman
-    vector<Log> logSisa;
-    for (int i = 0; i < listLog.size(); i++) {
-        if (listLog[i].waktu >= batasWaktu) { 
-            logSisa.push_back(listLog[i]); 
-        }
+  for (int i = 0; i < listLog.size(); i++) {
+    if (listLog[i].waktu >= batas) {
+      logSisa.push_back(listLog[i]);
+      mapLevel[listLog[i].level].push_back(listLog[i]);
+      buffer << listLog[i].id << "|" << listLog[i].waktu << "|"
+             << listLog[i].level << "|" << listLog[i].sumber << "|"
+             << listLog[i].pesan << "\n";
     }
-    listLog = logSisa; 
+  }
+  listLog = logSisa;
 
-    // 2. Kosongin map dan isi ulang
-    mapLevel.clear();
-    for (int i = 0; i < listLog.size(); i++) {
-        mapLevel[listLog[i].level].push_back(listLog[i]);
-    }
+  ofstream file("data_log.txt", ios::trunc);
+  file << buffer.str();
+  file.close();
 
-    // 3. Eksekusi sesuai opsi
-    if (opsi == 1) {
-        // Tulis langsung ke file saat itu juga
-        stringstream buffer;
-        for (int i = 0; i < listLog.size(); i++) {
-            buffer << listLog[i].id << "|" << listLog[i].waktu << "|" << listLog[i].level << "|" 
-                   << listLog[i].sumber << "|" << listLog[i].pesan << "\n";
-        }
-        ofstream file("data_log.txt", ios::trunc); 
-        file << buffer.str(); 
-        file.close();
-    }
-
-    auto end = chrono::high_resolution_clock::now();
-    auto durasi = chrono::duration_cast<chrono::microseconds>(end - start).count();
-
-    cout << "\nSukses! Sisa total log sekarang: " << listLog.size() << "\n";
-    cout << "Waktu murni hapus & sinkronisasi: " << durasi << " mikrodetik\n";
+  auto end = chrono::high_resolution_clock::now();
+  cout << "\nSukses! Log terhapus permanen dari file .txt\n";
+  cout << "Sisa log sekarang: " << listLog.size() << "\n";
+  cout << "Waktu hapus & simpan: "
+       << chrono::duration_cast<chrono::microseconds>(end - start).count()
+       << " mikrodetik\n";
 }
 
-void simpanKeFile() {
-    stringstream buffer;
-    for (int i = 0; i < listLog.size(); i++) {
-        buffer << listLog[i].id << "|" << listLog[i].waktu << "|" << listLog[i].level << "|" 
-               << listLog[i].sumber << "|" << listLog[i].pesan << "\n";
-    }
-    
-    ofstream file("data_log.txt", ios::trunc); // Langsung simpan ke .txt
-    file << buffer.str(); 
-    file.close();
-}
+int main() {
+  bacaDataFile();
+  int menu;
 
+  while (true) {
+    cout << "\n=== SISTEM MONITORING LOG (Total: " << listLog.size()
+         << ") ===\n";
+    cout << "1. Insert Log Baru\n";
+    cout << "2. Cari Waktu (Vector)\n";
+    cout << "3. Cari Sumber (Vector)\n";
+    cout << "4. Cari Level (Hash Map)\n";
+    cout << "5. Tampilkan Log ERROR\n";
+    cout << "6. Hapus Log Lama\n";
+    cout << "7. Statistik Log\n";
+    cout << "8. Keluar\n";
+    cout << "Pilih: ";
+    cin >> menu;
 
-int main(){
-    bacaDataFile("data_log.txt");
-
-    int menu;
-    while (true){
-        cout << "\n=== MENU LOG SYSTEM (Total: " << listLog.size() << " data) ===\n";
-        cout << "1. Tambah Log\n2. Cari Waktu\n3. Cari Level\n4. Cari Sumber\n5. Hapus Log Lama\n6. Keluar\n";
-        cout << "Pilih menu: ";
-        cin >> menu;
-
-        switch (menu) {
-            case 1:
-                tambahLog();
-                break;
-                
-            case 2:
-            case 4: { // Pakai kurung kurawal karena ada deklarasi variabel baru
-                string cari;
-                cout << "Masukkan kata kunci: ";
-                cin.ignore(); 
-                getline(cin, cari); 
-
-                if (menu == 2)
-                    cariWaktuDanSumber(1, cari);
-                else 
-                    cariWaktuDanSumber(3, cari);
-                break;
-            }
-            
-            case 3: { // Pakai kurung kurawal juga di sini
-                string cari;
-                cout << "Masukkan Level (INFO/WARNING/ERROR): ";
-                cin >> cari;
-                cariLevel(cari);
-                break;
-            }
-            
-            case 5:
-                hapusLogLama(); // Fungsi yang baru kita buat
-                break;
-                
-            case 6:
-                cout << "\nMenyimpan data...\n";
-                simpanKeFile();
-                cout << "Program selesai!\n";
-                return 0; // Pakai return 0 biar langsung keluar dari program, bukan break
-                
-            default:
-                cout << "\nMenu Tidak Tersedia\n";
-                break;
+    string kata;
+    switch (menu) {
+      case 1:
+        tambahLog();
+        break;
+      case 2:
+        cout << "Waktu: ";
+        cin.ignore();
+        getline(cin, kata);
+        cariWaktuAtauSumber(1, kata);
+        break;
+      case 3:
+        cout << "Sumber: ";
+        cin.ignore();
+        getline(cin, kata);
+        cariWaktuAtauSumber(2, kata);
+        break;
+      case 4:
+        cout << "Level (INFO/WARNING/ERROR): ";
+        cin >> kata;
+        for (char& c : kata) {
+          c = toupper(c);
         }
+        cariLevel(kata);
+        break;
+      case 5:
+        cout << "\n--- LOG ERROR ---\n";
+        cariLevel("ERROR");
+        break;
+      case 6:
+        hapusLogLama();
+        break;
+      case 7:
+        tampilStatistik();
+        break;
+      case 8:
+        cout << "\nProgram selesai!\n";
+        return 0;
+      default:
+        cout << "Menu salah!\n";
     }
-
-    return 0;
+  }
 }
