@@ -16,7 +16,8 @@ def tambah_data_dummy(filename, count, start_id):
     seconds_range = int((end_date - start_date).total_seconds())
 
     try:
-        # Gunakan mode 'a' supaya data lama tidak terhapus
+        os.makedirs(os.path.dirname(filename), exist_ok=True) if os.path.dirname(filename) else None
+
         with open(filename, "a", encoding="utf-8") as f:
             for i in range(start_id, start_id + count):
                 random_sec = random.randint(0, seconds_range)
@@ -24,16 +25,14 @@ def tambah_data_dummy(filename, count, start_id):
                 lv = random.choice(levels)
                 srv = random.choice(services)
                 msg = random.choice(messages[lv])
-                
+
                 line = f"{i}|{ts}|{lv}|{srv}|{msg}\n"
                 f.write(line)
-        
-        print(f"Mantap! Data berhasil ditambah ke: {filename}")
-    
+
+        print(f"\nMantap! Data berhasil ditambah ke: {filename}")
+
     except Exception as e:
         print(f"Gagal nambah data karena: {e}")
-
-# Pastika file data_log.txt ada di dalam folder output
 
 # tambah_data_dummy(lokasi file/nama file, berapa banyak data, mulai dari id berapa)
 tambah_data_dummy("output/data_log.txt", 10000, 1)
