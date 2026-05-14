@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include <ctime>
+#include <iomanip>
 
 using namespace std;
 
@@ -120,26 +121,24 @@ void tambahLog() {
 // 3. SEARCH O(N) — VECTOR (Waktu & Sumber)
 // =====================================================
 void cariWaktuAtauSumber(int pilihan, string keyword) {
-  auto start = chrono::high_resolution_clock::now();
-  int ketemu = 0;
-
   string kwLower = toLower(keyword);
+  vector<const Log*> hasil;
 
+  // Ukur HANYA pencarian
+  auto start = chrono::high_resolution_clock::now();
   for (const auto& log : listLog) {
     string target = toLower(pilihan == 1 ? log.waktu : log.sumber);
-    if (target.find(kwLower) != string::npos) {
-      tampilLog(log);
-      ketemu++;
-    }
+    if (target.find(kwLower) != string::npos)
+      hasil.push_back(&log);
   }
-
   auto end = chrono::high_resolution_clock::now();
-  long long us = chrono::duration_cast<chrono::microseconds>(end - start).count();
 
-  cout << "\nTotal ditemukan : " << ketemu << " log\n";
-  cout << "Struktur data   : Vector (Linear Search)\n";
-  cout << "Kompleksitas    : O(N)  N=" << listLog.size() << "\n";
-  cout << "Waktu eksekusi  : " << us << " mikrodetik\n";
+  // Cetak DI LUAR pengukuran
+  for (const auto* log : hasil) tampilLog(*log);
+
+  long long us = chrono::duration_cast<chrono::microseconds>(end - start).count();
+  cout << "\nTotal ditemukan : " << hasil.size() << " log\n";
+  cout << "Waktu eksekusi  : " << us << " mikrodetik (pencarian)\n";
 }
 
 // =====================================================
@@ -162,7 +161,7 @@ void cariLevel(string target) {
   cout << "\nTotal ditemukan : " << ketemu << " log\n";
   cout << "Struktur data   : Hash Map (Direct Lookup)\n";
   cout << "Kompleksitas    : O(1) average\n";
-  cout << "Waktu eksekusi  : " << us << " mikrodetik\n";
+  cout << "Waktu eksekusi  : " << us << " mikrodetik (pencarian)\n";
 }
 
 // =====================================================
@@ -172,10 +171,11 @@ void tampilStatistik() {
   cout << "\n=== STATISTIK LOG ===\n";
 
   size_t memVector = listLog.size() * sizeof(Log);
+
   size_t memMap = 0;
   for (const auto& pair : mapLevel) {
     memMap += pair.second.size() * sizeof(Log);
-    memMap += pair.first.size();
+    memMap += pair.first.size(); 
   }
 
   for (const auto& pair : mapLevel) {
@@ -185,12 +185,14 @@ void tampilStatistik() {
     cout.precision(1);
     cout << pct << "%)\n";
   }
+  
   cout << "  Total          : " << listLog.size() << " log\n";
+  
   cout << "\n--- Estimasi Memori ---\n";
-  cout << "  Vector         : ~" << memVector / 1024 << " KB\n";
-  cout << "  Hash Map       : ~" << memMap / 1024 << " KB (overhead index)\n";
+  cout << fixed << setprecision(2);
+  cout << "  Vector\t: " << memVector << " bytes ("<< fixed << setprecision(2) << memVector / 1024.0 << " KB)\n";
+  cout << "  Hash Map\t: " << memMap << " bytes ("<< fixed << setprecision(2) << memMap / 1024.0 << " KB)\n";
 }
-
 // =====================================================
 // 6. HAPUS LOG LAMA (by tanggal)
 // =====================================================

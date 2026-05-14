@@ -35,4 +35,4 @@ def tambah_data_dummy(filename, count, start_id):
         print(f"Gagal nambah data karena: {e}")
 
 # tambah_data_dummy(lokasi file/nama file, berapa banyak data, mulai dari id berapa)
-tambah_data_dummy("output/data_log.txt", 10000, 1)
+tambah_data_dummy("output/data_log.txt", 15000, 1)
